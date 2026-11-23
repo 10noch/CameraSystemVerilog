@@ -55,13 +55,13 @@ module camera_capture import HDMI_info::*; (
                 state <= WAIT_VSYNC_HIGH;
             end else begin
                 case (state)
-                    // 1. Wait for current frame to finish (VSYNC goes low)
+                    // Wait for current frame to finish
                     WAIT_VSYNC_LOW: begin
                         if (!vsync_high)
                             state <= WAIT_VSYNC_HIGH;
                     end
 
-                    // 2. Wait for vertical blanking to end (VSYNC goes high)
+                    // Wait for vertical blanking to end
                     WAIT_VSYNC_HIGH: begin
                         if (vsync_high) begin
                             line_cnt <= '0;
@@ -69,7 +69,7 @@ module camera_capture import HDMI_info::*; (
                         end
                     end
 
-                    // 3. Skip top non-visible lines
+                    // Skip top non-visible lines
                     SKIP_LINES: begin
                         if (hsync_fall) begin
                             if (line_cnt == SKIP_TOP_LINES - 1) begin
@@ -81,7 +81,7 @@ module camera_capture import HDMI_info::*; (
                         end
                     end
 
-                    // 4. Re-sync at the start of every visible row
+                    // Re-sync at the start of every visible row
                     WAIT_HSYNC: begin
                         if (hsync_fall) begin
                             clk_cnt <= '0;
@@ -89,7 +89,7 @@ module camera_capture import HDMI_info::*; (
                         end
                     end
 
-                    // 5. Wait 9.4 us + 2.3 us margin before sampling active video
+                    // Wait 9.4 us + 2.3 us margin before sampling active video
                     WAIT_PORCH: begin
                         if (clk_cnt == BACK_PORCH_CLKS - 1) begin
                             clk_cnt <= '0;
@@ -100,7 +100,7 @@ module camera_capture import HDMI_info::*; (
                         end
                     end
 
-                    // 6. Grab 48 pixels across the active row (1 every 100 clocks)
+                    // Grab 48 pixels across the active row
                     CAPTURE_ROW: begin
                         if (clk_cnt == 0) begin
                             wea        <= 1'b1;

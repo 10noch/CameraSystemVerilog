@@ -43,7 +43,7 @@ module top import HDMI_info::*; (
     );
 
     // 2. Sync & Frame Capture (writes raw grayscale pixels directly to BRAM)
-    camera_capture capture_inst (
+    CAPTURE capture_inst (
         .clk        (clk),
         .rst        (rst),
         .csync_n    (csync_n),
